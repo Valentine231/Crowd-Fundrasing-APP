@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import {  Outlet, useOutletContext, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import {   useOutletContext, useSearchParams } from 'react-router-dom'
+import { PaystackButton } from 'react-paystack'
 
 const Donationform = () => {
   const {Project , handleDonation} = useOutletContext()
@@ -11,14 +13,29 @@ const Donationform = () => {
   const[Name, setName]= useState('')
   const [Email, setEmail] = useState('')
 
+  const publickey = 'pk_test_296f47c5e8e7a5b71336f33dd7c61d59b70083cb';
+  const amount = Donation * 100;
+
+  const componentProps = {
+    email: Email,
+    amount: amount,
+    metadata: {
+      name: Name,
+    },
+    publicKey: publickey,
+    text: 'Donate',
+    onSuccess: () => {
+      alert('Payment Successful');
+      handleDonation(Project.id,Donation)
+      resetForm();
+    },
+    onClose: () => {
+      alert('Payment closed');
+  }
+  };
+
 const handleSumbit=(e)=> {
   e.preventDefault(e)
-  
- 
-
-  setName('')
-   setEmail('') 
-   setDonation(0)
    
    if(!projects){
     return('invaild project selected')
@@ -29,7 +46,17 @@ const handleSumbit=(e)=> {
     return;
   }
 
-  handleDonation(Project.id,Donation)
+  if (!Name || !Email) {
+    alert('Please fill out all fields.');
+    return;
+  }
+ 
+  const resetForm =()=>{
+    setName('')
+    setEmail('') 
+    setDonation(0)
+  }
+ 
   
   
 
@@ -49,9 +76,14 @@ const handleSumbit=(e)=> {
 
            <label className='text-white mb-1'> Donation Amount</label>
            <input type="number"  placeholder='Amount'  className='w-full p-2 mb-4 rounded' value={Donation} onChange={(e) => setDonation(Number(e.target.value))}/>
-
-           <button type='submit' className='bg-black rounded-lg p-2 text-white hover:bg-white hover:text-green-300 m-2'>Donate</button>
-            </form>
+          
+            
+           {/* <button type='submit' className='bg-black rounded-lg p-2 text-white hover:bg-white hover:text-green-300 m-2'>Donate</button> */}
+           { Name && Email && Donation > 0 && (
+           <PaystackButton {...componentProps} className='bg-black rounded-lg p-2 text-white hover:bg-white hover:text-green-300 m-2' type='submit' />
+           )} 
+           </form>
+           
         </section>
     </div>
   )
