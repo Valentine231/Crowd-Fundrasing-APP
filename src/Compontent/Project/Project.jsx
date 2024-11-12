@@ -1,34 +1,49 @@
 import React, { useState } from 'react'
-import Donationform from '../Donationform/Donationform'
+import { Link,  useOutletContext } from 'react-router-dom'
+
+
 
 const Project = () => {
-    const [Donation, setDonation] = useState(0)
-    const [Progress, setProgress] = useState(0)
-    
-    const Goal = 1000000;
-
-    const handleDonation = (Amount) => {
-   
-        setDonation(Donation + Amount)
-        setProgress((Donation + Amount) / Goal * 100)
-
-    }
- 
+    const { Project } = useOutletContext();
   return (
-    <div>
-       
-        <section className='flex flex-col items-center mt-[5rem]  '>
-        <h1 className='text-2xl text-center'>HOUSING CONSTRUCTION FUND</h1>
-            <div className='flex flex-col items-center'>
-                <h1 className='text-2xl'>Goal: $1,000,000</h1>
-                <h1 className='text-2xl'>Donation: ${Donation}</h1>
-                <h1 className='text-2xl'>Progress: {Progress}%</h1>
-               {Donation  >= Goal && <h1 className='text-2xl text-green-500'>congratulation goal has being reached</h1>}
-                <Donationform handleDonation={handleDonation} />
-            </div>
-        </section>
+    <div className='flex flex-col items-center gap-4 w-full max-w-screen-lg mx-auto my-auto p-4 md:flex-row md:gap-8 '>
+
+        {Project.map((projects)=> (
+        <div key={projects.id} className="bg-white shadow-lg rounded-lg overflow-hidden border border-indigo-300 ">
+            <img src={projects.imageURL} alt={projects.name} className="w-full h-64 object-cover" />
+            <div className="p-5">
+                <h2 className="text-xl font-semibold">{projects.name}</h2>
+                <p className="text-gray-600">{projects.motive}</p>
+                <div className='flex flex-col-2 gap-2'>
+                    <div><p className='text-xs'>Goal: {projects.goal}</p></div>
+                    <div><p className='text-xs'>Donation: ${projects.donation}</p></div>
+                    
+                </div>
+
+                <div  className='flex flex-rows-2'>
+                    <div><p className='text-xs'>Progress: {Math.floor(projects.progress)}%</p></div>
+                   <div>{ projects.donation  >= projects.goal && (
+                    <p className='text-2xl text-green-500'>congratulation goal has being reached</p>)}
+                    </div>
+
+                    </div>
+                <Link to={`/Donation?id=${projects.id}`}>
+                    <button className='bg-gray-800 text-white rounded-lg p-2 mt-2'>
+                        Donate
+                    </button>
+                </Link>
+        </div>
     </div>
+    ))}
+
+     
+
+        
+    </div>
+    
   )
+
 }
 
 export default Project
+
