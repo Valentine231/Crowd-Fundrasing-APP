@@ -6,12 +6,13 @@ import { PaystackButton } from 'react-paystack'
 const Donationform = () => {
   const {Project , handleDonation} = useOutletContext()
   const [searchParams] = useSearchParams();
-  const projectId = parseInt(searchParams.get('id'));
+  const projectId = parseInt(searchParams.get('id'),10);
 
   const projects = Project.find((proj)=>proj.id === projectId)
   const[Donation, setDonation] = useState(0)
   const[Name, setName]= useState('')
   const [Email, setEmail] = useState('')
+  const [currency,setCurrency] = useState('NGN')
 
   const publickey = 'pk_test_296f47c5e8e7a5b71336f33dd7c61d59b70083cb';
   const amount = Donation * 100;
@@ -19,6 +20,7 @@ const Donationform = () => {
   const componentProps = {
     email: Email,
     amount: amount,
+    currency: currency,
     metadata: {
       name: Name,
     },
@@ -54,7 +56,8 @@ const handleSumbit=(e)=> {
   const resetForm =()=>{
     setName('')
     setEmail('') 
-    setDonation(0)
+    setDonation(0)  
+    setCurrency('NGN')
   }
  
   
@@ -77,6 +80,16 @@ const handleSumbit=(e)=> {
            <label className='text-white mb-1'> Donation Amount</label>
            <input type="number"  placeholder='Amount'  className='w-full p-2 mb-4 rounded' value={Donation} onChange={(e) => setDonation(Number(e.target.value))}/>
           
+          <select  className="w-full p-2 mb-4 rounded"
+           value={currency} onChange={(e) => setCurrency(e.target.value)}>
+
+            <option value="NGN">NGN</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="GHS">Ghanaian Cedi (GHS)</option>
+            <option value="ZAR">South African Rand (ZAR)</option>
+          </select>
             
            {/* <button type='submit' className='bg-black rounded-lg p-2 text-white hover:bg-white hover:text-green-300 m-2'>Donate</button> */}
            { Name && Email && Donation > 0 && (
